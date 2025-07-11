@@ -1,0 +1,367 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+@font-face {
+  font-family: 'DMC5Font';
+  src: url('/DMC5Font.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+:root {
+  --dmc-red: #9E1B1B;
+  --dmc-blue: #1B3D9E;
+  --dmc-dark: #0B0B0B;
+  --dmc-light: #1A1A1A;
+  --text-color: #F8F8F8;
+  --card-bg: #121212;
+  --input-bg: #1F1F1F;
+  --input-border: #333;
+  --placeholder-color: #777;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: 'DMC5Font', 'Poppins', sans-serif;
+}
+
+body {
+  background-color: var(--dmc-dark);
+  color: var(--text-color);
+  line-height: 1.6;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    url('/rebellion.png'),
+    url('/rebellion.png'),
+    url('/rebellion.png'),
+    url('/rebellion.png'),
+    url('/rebellion.png');
+  background-repeat: no-repeat;
+  background-position:
+    5% 10%,
+    85% 20%,
+    40% 50%,
+    70% 75%,
+    15% 80%;
+  background-size: 120px;
+  opacity: 0.05;
+  z-index: -1;
+}
+
+@keyframes skullFloat {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 500px 500px;
+  }
+}
+
+.fixed-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 999;
+  background-color: var(--dmc-light);
+  padding: 1rem 2rem;
+  box-shadow:
+    0 0 15px rgba(255, 0, 0, 0.7),
+    0 0 30px rgba(255, 0, 0, 0.5),
+    0 4px 10px rgba(0, 0, 0, 0.5);
+  transition: all 0.4s ease;
+  text-align: center;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: nowrap;
+  text-align: left;
+  transition: all 0.4s ease;
+}
+
+.logo {
+  width: 70px;
+  height: 70px;
+  border-radius: 8px;
+  object-fit: cover;
+  transition: all 0.4s ease;
+}
+
+.header-text h1 {
+  font-size: 2rem;
+  transition: all 0.4s ease;
+  font-family: 'DMC5Font', 'Poppins', sans-serif;
+}
+
+.header-text p {
+  font-size: 1rem;
+  transition: all 0.4s ease;
+}
+
+.fixed-header.shrink {
+  padding: 0.5rem 2rem;
+}
+
+.fixed-header.shrink .header-content {
+  justify-content: flex-start;
+}
+
+.fixed-header.shrink .logo {
+  width: 40px;
+  height: 40px;
+}
+
+.fixed-header.shrink .header-text h1 {
+  font-size: 1.2rem;
+}
+
+.fixed-header.shrink .header-text p {
+  font-size: 0.8rem;
+}
+
+section {
+  padding: 4rem 2rem;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.hero {
+  position: relative;
+  background: linear-gradient(to right, rgba(31, 31, 31, 0.9), rgba(11, 11, 11, 0.9)), url('/bg-hero.jpg');
+  background-size: cover;
+  background-position: center;
+  text-align: center;
+  margin-top: 130px;
+  height: 80vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 30px rgba(158, 27, 27, 0.5);
+}
+
+#waveCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  display: block;
+  opacity: 0.2;
+  will-change: transform;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.05), transparent 70%) repeat;
+  background-size: 80px 80px;
+  animation: waveMotion 10s linear infinite;
+  transform: rotate(30deg);
+  z-index: 0;
+  opacity: 0.1;
+}
+
+.hero-img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 4px solid var(--dmc-red);
+  margin: 1rem auto;
+  display: block;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.hero-content h1 {
+  font-size: 3rem;
+  font-family: 'DMC5Font', 'Poppins', sans-serif;
+  color: var(--dmc-red);
+  margin-bottom: 1rem;
+}
+
+.hero-content h2 {
+  font-size: 1.5rem;
+  font-family: 'DMC5Font', 'Poppins', sans-serif;
+}
+
+@media (max-width: 768px) {
+  .hero-content h1 {
+    font-size: 2rem;
+  }
+
+  .hero-content h2 {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero-content h1 {
+    font-size: 1.8rem;
+  }
+
+  .hero-content h2 {
+    font-size: 1rem;
+  }
+}
+
+.section-title {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: var(--dmc-red);
+  text-align: center;
+  font-family: 'DMC5Font', 'Poppins', sans-serif;
+}
+
+.services,
+.skills,
+.testimonies {
+  background-color: var(--card-bg);
+  margin-top: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  padding: 2rem;
+}
+
+.service-item,
+.testimony {
+  margin-bottom: 1.5rem;
+}
+
+.skills-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.skill-category h3 {
+  color: var(--dmc-blue);
+  margin-bottom: 0.5rem;
+  font-family: 'DMC5Font', 'Poppins', sans-serif;
+}
+
+.skill-category ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+}
+
+.skill-category li {
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+@media (min-width: 768px) {
+  .skills-group {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .skill-category {
+    width: 48%;
+  }
+}
+
+.contact-button,
+.whatsapp-button {
+  background: var(--dmc-red);
+  color: white;
+  border: none;
+  padding: 0.8rem 2rem;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 1rem;
+}
+
+.whatsapp-button {
+  background: limegreen;
+}
+
+.whatsapp-button:hover {
+  background: green;
+}
+
+.contact-button:hover {
+  background: var(--dmc-blue);
+}
+
+.now-playing-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: var(--dmc-red);
+  color: white;
+  padding: 0.6rem 1rem;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  z-index: 9999;
+  transition: all 0.3s ease;
+  text-align: center;
+  max-width: 220px;
+  line-height: 1.4;
+}
+
+@media (max-width: 600px) {
+  .now-playing-button {
+    bottom: 15px;
+    right: 15px;
+    padding: 0.5rem 0.8rem;
+    font-size: 0.75rem;
+    border-radius: 8px;
+    max-width: 180px;
+  }
+}
+
+footer {
+  background: var(--dmc-light);
+  color: var(--text-color);
+  text-align: center;
+  padding: 2rem;
+}
+
+@keyframes waveMotion {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 160px 160px;
+  }
+}
