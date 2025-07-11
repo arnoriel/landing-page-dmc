@@ -6,7 +6,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-// import '@/styles/globals.css';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -41,6 +40,23 @@ export default function Home() {
   const [heroImageUrl, setHeroImageUrl] = useState<string>('');
   const [audioUrl, setAudioUrl] = useState<string>('');
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // State for order form
+  const [selectedService, setSelectedService] = useState<string | null>(null);
+  const [newOrder, setNewOrder] = useState({
+    name: '',
+    phone: '',
+    due_date: '',
+    price: '70000',
+    applyDiscount: false,
+  });
+  const [orderErrors, setOrderErrors] = useState({
+    name: '',
+    phone: '',
+    due_date: '',
+  });
+  const [orderLoading, setOrderLoading] = useState(false);
+  const [showSuccessNotification, setShowSuccessNotification] = useState(false);
 
   useEffect(() => {
     AOS.init({ once: true, duration: 1000, easing: 'ease-in-out' });
@@ -163,11 +179,103 @@ export default function Home() {
     }
   };
 
+  const openOrderForm = (service: string) => {
+    setSelectedService(service);
+    setNewOrder({
+      name: service,
+      phone: '',
+      due_date: '',
+      price: '70000',
+      applyDiscount: false,
+    });
+    setOrderErrors({ name: '', phone: '', due_date: '' });
+  };
+
+  const closeOrderForm = () => {
+    setSelectedService(null);
+    setNewOrder({ name: '', phone: '', due_date: '', price: '70000', applyDiscount: false });
+    setOrderErrors({ name: '', phone: '', due_date: '' });
+  };
+
+  const handleOrderInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setNewOrder((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleDiscountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const applyDiscount = e.target.checked;
+    setNewOrder((prev) => ({
+      ...prev,
+      applyDiscount,
+      price: applyDiscount ? '60000' : '70000',
+    }));
+  };
+
+  const handleOrderSubmit = async () => {
+    const { name, phone, due_date, price } = newOrder;
+    const newErrors = { name: '', phone: '', due_date: '' };
+
+    if (!name) newErrors.name = 'Nama order wajib diisi';
+    if (!phone) newErrors.phone = 'Nomor telepon wajib diisi';
+    else if (!/^[0-9]{10,15}$/.test(phone)) newErrors.phone = 'Nomor telepon harus 10-15 angka';
+    if (!due_date) newErrors.due_date = 'Tanggal wajib diisi';
+
+    setOrderErrors(newErrors);
+
+    if (newErrors.name || newErrors.phone || newErrors.due_date) return;
+
+    setOrderLoading(true);
+    const generatedOrderNumber =
+      'ORD-' + Math.random().toString(36).substring(2, 10).toUpperCase();
+
+    const { error } = await supabase.from('orders').insert({
+      name,
+      price: Number(price),
+      order_number: generatedOrderNumber,
+      due_date,
+      status: 'unfinished',
+      phone,
+    });
+
+    if (error) {
+      console.error('Gagal menambahkan order:', error);
+      alert('Gagal menambahkan order. Silakan coba lagi.');
+    } else {
+      setShowSuccessNotification(true);
+
+      // Tampilkan notifikasi 5 detik, lalu sembunyikan
+      setTimeout(() => {
+        setShowSuccessNotification(false);
+      }, 5000);
+
+      // Delay close form biar notifikasi bisa muncul dulu
+      setTimeout(() => {
+        closeOrderForm();
+      }, 150);
+    }
+
+    setOrderLoading(false);
+  };
+
   if (loading) return <div className="text-white text-center p-10">Loading...</div>;
   if (!settings) return <div className="text-white text-center p-10">No settings found.</div>;
 
   return (
     <div className="text-white">
+      {/* Success Notification */}
+      {showSuccessNotification && (
+        <div
+          className="fixed top-4 right-4 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg flex items-center space-x-3 z-[9999] notification-slide-in"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+          </svg>
+          <p className="text-sm font-medium">
+            Order berhasil dibuat! Kami akan segera menghubungi Anda.
+          </p>
+        </div>
+      )}
+
       <header className={`fixed-header ${isScrolled ? 'shrink' : ''}`} id="main-header">
         <div className="header-content">
           {logoUrl && (
@@ -213,6 +321,106 @@ export default function Home() {
         <div className="service-item">
           <h3>Joki Tugas Coding</h3>
           <p>Merasa pusing untuk mengerjakan tugas kuliah / sekolah Anda? atau terlalu sibuk sampai tidak bisa mengerjakan tugas ngodingmu itu? sewa joki dariku untuk tugasmu itu saja dengan harga murah mulai dari Rp. 70.000,- (bisa di nego, chat saja)</p>
+          <button
+            className="primary-button"
+            onClick={() => openOrderForm('Joki Tugas Coding')}
+            aria-label="Order Joki Tugas Coding"
+          >
+            Order Sekarang
+          </button>
+          {selectedService === 'Joki Tugas Coding' && (
+            <div className="order-form mt-4 p-6 bg-[#1a1d26] rounded-lg border border-[#263238] shadow-lg">
+              <h4 className="text-lg font-bold mb-4 text-[#00bcd4]">Order: Joki Tugas Coding</h4>
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium text-white block mb-1">
+                    Nama Order
+                    {orderErrors.name && <span className="text-red-500 ml-2 text-xs">{orderErrors.name}</span>}
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={newOrder.name}
+                    onChange={handleOrderInputChange}
+                    className="w-full p-3 rounded bg-[#12151c] border border-[#263238] text-white focus:outline-none focus:ring-2 focus:ring-[#00bcd4] transition-all duration-300"
+                    disabled
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-white block mb-1">
+                    Nomor Telepon
+                    {orderErrors.phone && <span className="text-red-500 ml-2 text-xs">{orderErrors.phone}</span>}
+                  </label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={newOrder.phone}
+                    onChange={handleOrderInputChange}
+                    className="w-full p-3 rounded bg-[#12151c] border border-[#263238] text-white focus:outline-none focus:ring-2 focus:ring-[#00bcd4] transition-all duration-300"
+                    pattern="[0-9]{10,15}"
+                    title="Nomor telepon harus 10-15 angka"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-white block mb-1">
+                    Due Date
+                    {orderErrors.due_date && <span className="text-red-500 ml-2 text-xs">{orderErrors.due_date}</span>}
+                  </label>
+                  <input
+                    type="date"
+                    name="due_date"
+                    value={newOrder.due_date}
+                    onChange={handleOrderInputChange}
+                    className="w-full p-3 rounded bg-[#12151c] border border-[#263238] text-white focus:outline-none focus:ring-2 focus:ring-[#00bcd4] transition-all duration-300"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-white block mb-1">
+                    Harga (Rp)
+                  </label>
+                  <input
+                    type="text" // Ubah type ke text agar bisa menampilkan format Rupiah
+                    name="price"
+                    value={newOrder.price ? `Rp ${newOrder.price.toLocaleString()}` : ''} // Format ke Rupiah
+                    readOnly
+                    className="w-full p-3 rounded bg-[#12151c] border border-[#263238] text-white opacity-70 cursor-not-allowed"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-white flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={newOrder.applyDiscount}
+                      onChange={handleDiscountChange}
+                      className="mr-2 accent-[#00bcd4]"
+                    />
+                    Terapkan Diskon Rp 10.000
+                  </label>
+                </div>
+                <div className="flex justify-end space-x-3 pt-4">
+                  {/* Tombol Batal */}
+                  <button
+                    className="secondary-button"
+                    onClick={closeOrderForm}
+                    disabled={orderLoading}
+                    aria-label="Batalkan pesanan"
+                  >
+                    Batal
+                  </button>
+
+                  {/* Tombol Kirim Order */}
+                  <button
+                    className="primary-button"
+                    onClick={handleOrderSubmit}
+                    disabled={orderLoading}
+                    aria-label="Kirim pesanan Joki Tugas Coding"
+                  >
+                    {orderLoading ? 'Menyimpan...' : 'Gas Order'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
         <div className="service-item">
           <h3>Tutor Coding</h3>

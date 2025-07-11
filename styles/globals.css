@@ -365,3 +365,210 @@ footer {
     background-position: 160px 160px;
   }
 }
+
+@keyframes dropdownOpen {
+  0% {
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    max-height: 500px;
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes dropdownClose {
+  0% {
+    max-height: 500px;
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+.order-form {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: all 0.5s ease-in-out;
+}
+
+.order-form:not(:empty) {
+  animation: dropdownOpen 0.5s ease-in-out forwards;
+}
+
+.order-form:empty {
+  animation: dropdownClose 0.5s ease-in-out forwards;
+}
+
+input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--dmc-red);
+}
+
+@keyframes notificationSlideIn {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes notificationSlideOut {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.notification-slide-in {
+  animation: notificationSlideIn 0.5s ease-in-out forwards;
+}
+
+.notification-slide-in:not(:visible) {
+  animation: notificationSlideOut 0.5s ease-in-out forwards;
+}
+
+.order-form {
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 10px;
+  padding: 2rem;
+  margin-top: 1rem;
+  box-shadow: 0 0 10px rgba(0, 188, 212, 0.3);
+  animation: dropdownOpen 0.5s ease-in-out forwards;
+}
+
+.order-form input[type="text"],
+.order-form input[type="tel"],
+.order-form input[type="date"],
+.order-form input[type="number"] {
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  width: 100%;
+  color: var(--text-color);
+  margin-top: 0.3rem;
+  font-size: 0.95rem;
+  transition: 0.3s;
+}
+
+.order-form input::placeholder {
+  color: var(--placeholder-color);
+}
+
+.order-form input:focus {
+  border-color: var(--dmc-blue);
+  box-shadow: 0 0 5px var(--highlight);
+}
+
+.order-form label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-color);
+  display: block;
+  margin-bottom: 0.2rem;
+}
+
+.order-form .text-red-500 {
+  font-size: 0.8rem;
+  margin-left: 0.3rem;
+}
+
+.order-form .flex {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.notification-slide-in {
+  animation: slideIn 0.4s ease-out;
+}
+
+/* Add these styles to globals.css */
+.primary-button {
+  background: linear-gradient(to right, var(--dmc-red), var(--dmc-blue));
+  color: var(--text-color);
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 2px 8px rgba(158, 27, 27, 0.3);
+  text-align: center;
+}
+
+.primary-button:hover:not(:disabled) {
+  background: linear-gradient(to right, var(--dmc-blue), var(--dmc-red));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(158, 27, 27, 0.5);
+}
+
+.primary-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.secondary-button {
+  background: linear-gradient(to right, #4b1b1b, #2a2a2a);
+  color: var(--text-color);
+  font-weight: 500;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.secondary-button:hover:not(:disabled) {
+  background: linear-gradient(to right, #6b2b2b, #3a3a3a);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.secondary-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .primary-button,
+  .secondary-button {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+  }
+}
