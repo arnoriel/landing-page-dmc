@@ -202,15 +202,6 @@ export default function Home() {
     setNewOrder((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleDiscountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const applyDiscount = e.target.checked;
-    setNewOrder((prev) => ({
-      ...prev,
-      applyDiscount,
-      price: applyDiscount ? '60000' : '70000',
-    }));
-  };
-
   const handleOrderSubmit = async () => {
     const { name, phone, due_date, price } = newOrder;
     const newErrors = { name: '', phone: '', due_date: '' };
@@ -387,15 +378,6 @@ export default function Home() {
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-white flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={newOrder.applyDiscount}
-                      onChange={handleDiscountChange}
-                      className="mr-2 accent-[#00bcd4]"
-                    />
-                    Terapkan Diskon Rp 10.000
-                  </label>
                 </div>
                 <div className="flex justify-end space-x-3 pt-4">
                   {/* Tombol Batal */}
