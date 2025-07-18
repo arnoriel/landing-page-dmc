@@ -410,7 +410,7 @@ export default function Home() {
         </div>
         <div className="service-item">
           <h3>Membuat Website</h3>
-          <p>Mau buat website pribadi? blog sendiri? situs marketing? kontak saja, aku sediakan dengan tawaran harga yang murah dan ramah di dompet.</p>
+          <p>Mau buat website pribadi? blog sendiri? situs marketing? kontak saja, aku sediakan dengan tawaran harga yang murah sekitar Rp. 500.000,- dengan benefit website keren dan stylish.</p>
         </div>
       </section>
 
